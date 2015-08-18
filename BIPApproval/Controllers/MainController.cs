@@ -1,4 +1,5 @@
 ﻿using BIPApproval.Models;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,10 @@ namespace BIPApproval.Controllers
 			approval.BIPs.Add(new BIPModel("8MB Only", null));
 			approval.BIPs.Add(new BIPModel("BIP 102", "https://github.com/jgarzik/bips/blob/2015_2mb_blocksize/bip-0102.mediawiki"));
 			approval.BIPs.Add(new BIPModel("BIP SIPA", "https://gist.github.com/sipa/c65665fc360ca7a176a6"));
+
+
+			CloudBlobClient client = Storage.CreateBlobClient();
+
 			approval.Devs.Add(new DevModel()
 			{
 				Name = "Nico",
