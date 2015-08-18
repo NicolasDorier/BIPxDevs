@@ -86,7 +86,7 @@ namespace BIPApproval.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Message", "Replay attack detected");
+                    ModelState.AddModelError("Message", "You can't replay an old message");
                 }
             }
             return View("DevEdit", original);
