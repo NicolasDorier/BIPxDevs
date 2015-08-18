@@ -1,10 +1,70 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model BIPApproval.Models.ApprovalMatrixModel
+@{
+	ViewBag.Title = "Index";
 }
+<style>
+    table {
+        display: block;
+        font-family: sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-size: 115%;
+        overflow: auto;
+        width: auto;
+    }
 
-<h2>BIP x Devs Approval Matrix</h2>
-<p>
-<table>
+    td {
+        background-color: rgb(238, 238, 238);
+        color: rgb(111, 111, 111);
+        padding: 20px 20px;
+        white-space: nowrap;
+        text-align: center;
+    }
 
-</table>
+    th {
+        background-color: rgb(112, 196, 105);
+        color: white;
+        font-weight: normal;
+        padding: 20px 30px;
+        text-align: center;
+    }
+
+    img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        border-color: black;
+        border-width: thin;
+        border-style: solid;
+    }
+</style>
+<h2>BIP x Devs Approval Matrix<sup><a href="https://blockchainprogramming.azurewebsites.net/" style="font-size:small;">With a shameless plug</a></sup></h2>
+<p>About clearing the noise of blocksize debate, devs need to sign with their PGP key. <br />
+ My sushi saving box : <b>15sYbVpRh6dyWycZMwPdxJWD4xbfxReeHe</b>. <br />
+ Happy Coding !
 </p>
+<table>
+	<tr>
+		<th>Dev</th>
+		@foreach(var bip in Model.BIPs){
+	  if(bip.Link != null)
+	  {
+			<th><a href="@bip.Link">@bip.Name</a></th>
+	   }
+	   else
+	   {
+			<th>@bip.Name</th>
+	   }
+   }    
+	</tr>
+	@foreach(var dev in Model.Devs)
+ {			
+		<tr>
+			<td>@dev.Name</td>
+			@for(int i = 0 ; i < Model.BIPs.Count ; i++)
+   {
+				<td>@dev.Approvals[i]</td>
+   }
+		</tr>
+ }
+</table>
+
