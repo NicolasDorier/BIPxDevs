@@ -1,0 +1,22 @@
+﻿@using BIPApproval
+@model BIPApproval.Models.DevEditViewModel
+@{
+    ViewBag.Title = "Dev";
+}
+
+<style>
+    .field-validation-error
+    {
+        color : red;
+    }
+</style>
+
+<h2>@Model.FriendlyName <sub style="font-size:small"><a href="@Model.ASCLink">asc</a>-<a href="@Model.MessageLink">sig</a></sub></h2>
+
+<p>Edit by submitting a signed PGP message following the format of the sample : (<a href="@Model.SignatureSample">Sample</a> gives <a href="@Model.ResultSample">Result</a>)</p>
+<form action="/EditOpinion" method="post">
+    @Html.ValidationMessageFor(o=>o.Message)<br/>
+    @Html.TextAreaFor(o => o.Message, 30, 300, null)  <br/>  
+    @Html.HiddenFor(o=>o.Id)
+    <input type="submit" value="Submit" />
+</form>

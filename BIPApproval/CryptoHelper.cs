@@ -11,54 +11,63 @@ namespace BIPApproval
 {
     public class CryptoHelper
     {
-        public static bool VerifySig(byte[] asc, byte[] sig)
+        public static bool VerifySig(string asc, string sig, out string message)
         {
-            PgpPublicKey pubkey = new PgpPublicKeyRing(PgpUtilities.GetDecoderStream(new MemoryStream(asc))).GetPublicKey(); //java madness
-
-
-            //AGAIN MADNESS THIS MAKE PERFECT SENSE !
-            ArmoredInputStream sigInput = new ArmoredInputStream(new MemoryStream(sig));
-
-            //
-            // read the input, making sure we ingore the last newline.
-            //
-            int ch;
-            string newLine = null;
-            MemoryStream bOut = new MemoryStream();
-
-            while((ch = sigInput.ReadByte()) >= 0 && sigInput.IsClearText())
+            try
             {
-                if(newLine != null)
+
+                PgpPublicKey pubkey = new PgpPublicKeyRing(PgpUtilities.GetDecoderStream(new MemoryStream(Encoding.UTF8.GetBytes(asc)))).GetPublicKey(); //java madness
+
+                //AGAIN MADNESS THIS MAKE PERFECT SENSE !
+                ArmoredInputStream sigInput = new ArmoredInputStream(new MemoryStream(Encoding.UTF8.GetBytes(sig)));
+
+                //
+                // read the input, making sure we ingore the last newline.
+                //
+                int ch;
+                string newLine = null;
+                MemoryStream bOut = new MemoryStream();
+
+                while((ch = sigInput.ReadByte()) >= 0 && sigInput.IsClearText())
                 {
-                    foreach(var c in newLine)
-                        bOut.WriteByte((byte)c);
-                    newLine = null;
-                }
-                if(ch == '\r')
-                {
-                    ch = sigInput.ReadByte();
+                    if(newLine != null)
+                    {
+                        foreach(var c in newLine)
+                            bOut.WriteByte((byte)c);
+                        newLine = null;
+                    }
+                    if(ch == '\r')
+                    {
+                        ch = sigInput.ReadByte();
+                        if(ch == '\n')
+                        {
+                            newLine = "\r\n";
+                            continue;
+                        }
+                    }
                     if(ch == '\n')
                     {
-                        newLine = "\r\n";
+                        newLine = "\n";
                         continue;
                     }
-                }
-                if(ch == '\n')
-                {
-                    newLine = "\n";
-                    continue;
+
+                    bOut.WriteByte((byte)ch);
                 }
 
-                bOut.WriteByte((byte)ch);
+                var toSign = bOut.ToArray();
+                message = Encoding.UTF8.GetString(toSign);
+                PgpObjectFactory pgpObjFactory = new PgpObjectFactory(sigInput);
+                var list = (PgpSignatureList)pgpObjFactory.NextPgpObject();
+                PgpSignature pgpSig = list[0];
+                pgpSig.InitVerify(pubkey);
+                pgpSig.Update(toSign);
+                return pgpSig.Verify();
             }
-
-            var toSign = bOut.ToArray();
-            PgpObjectFactory pgpObjFactory = new PgpObjectFactory(sigInput);
-            var list = (PgpSignatureList)pgpObjFactory.NextPgpObject();
-            PgpSignature pgpSig = list[0];
-            pgpSig.InitVerify(pubkey);
-            pgpSig.Update(toSign);
-            return pgpSig.Verify();
+            catch //Don't do it at home kids
+            {
+                message = null;
+                return false;
+            }
         }
     }
 }

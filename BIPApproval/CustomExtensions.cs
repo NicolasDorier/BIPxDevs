@@ -13,9 +13,9 @@ namespace BIPApproval
         public static IHtmlString Approval(this HtmlHelper html, bool? value)
         {
             if(!value.HasValue)
-                return html.Raw("");
+                return html.Raw("-");
             var img =
-                value.Value ? "Content/StatusAnnotations_Complete_and_ok_32xMD_color.png" : "Content/StatusAnnotations_Blocked_32xMD_color.png";
+                value.Value ? "/Content/StatusAnnotations_Complete_and_ok_32xMD_color.png" : "/Content/StatusAnnotations_Blocked_32xMD_color.png";
             return html.Raw("<img src=\"" + img + "\" />");
         }
     }

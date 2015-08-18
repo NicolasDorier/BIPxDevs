@@ -1,4 +1,5 @@
 ﻿using BIPApproval;
+using BIPApproval.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,9 +15,14 @@ namespace Tests
         [Fact]
         public void CanCheckSig()
         {
-            var pubkey = File.ReadAllBytes("../../Data/nico.asc");
-            var sig = File.ReadAllBytes("../../Data/signature.sig");
-            var result = CryptoHelper.VerifySig(pubkey, sig);
+            var pubkey = File.ReadAllText("../../Data/nico.asc");
+            var sig = File.ReadAllText("../../Data/signature.sig");
+            string txt = null;
+            var result = CryptoHelper.VerifySig(pubkey, sig, out txt);
+
+            DevViewModel dev = new DevViewModel();
+            dev.Load(txt);
+            Assert.True(dev.Opinions.Count == 2);
             Assert.True(result);
         }
     }

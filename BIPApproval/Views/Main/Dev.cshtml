@@ -4,20 +4,20 @@
     ViewBag.Title = "Dev";
 }
 
-<h2>@Model.Name <sub><a href="@Model.ASCLink" style="font-size:small">asc</a></sub></h2>
+<h2>@Model.FriendlyName <sub style="font-size:small"><a href="@Model.ASCLink">asc</a>-<a href="@Model.MessageLink">sig</a></sub></h2>
 
 <h3>Content</h3>
 <ul>
-    @foreach(var bip in @Model.BIPs)
+    @foreach(var bip in @Model.Opinions)
     {
-        <li><a href="#@bip">@bip</a></li>
+        <li><a href="#@bip.Name">@bip.Name</a> @Html.Approval(bip.Approve)</li>
     }
 </ul>
 
 @foreach(var opinion in @Model.Opinions)
 {
-    <h3>@opinion.Name @Html.Approval(opinion.Approve)</h3>
-    <p>@Html.Raw(opinion.Name)</p>
+    <h3><a name="@opinion.Name"></a> @opinion.Name @Html.Approval(opinion.Approve)</h3>
+    <p>@Html.Raw(opinion.Content.Replace("\r\n", "<br />"))</p>
 }
 
 

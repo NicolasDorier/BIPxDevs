@@ -18,11 +18,16 @@ namespace BIPApproval.Models
 			set;
 		}
 
-		public string Name
+		public string FriendlyName
 		{
 			get;
 			set;
 		}
+        public string Id
+        {
+            get;
+            set;
+        }
 	}
 
 	public class BIPModel
