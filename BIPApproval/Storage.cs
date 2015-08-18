@@ -15,5 +15,10 @@ namespace BIPApproval
 		{
 			return new CloudBlobClient(new StorageUri(new Uri(ConfigurationManager.AppSettings["Storage.Uri"])), new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(ConfigurationManager.AppSettings["Storage.Token"]));
 		}
+
+		public static CloudBlobContainer CreateBlobContainer()
+		{
+			return CreateBlobClient().GetContainerReference(ConfigurationManager.AppSettings["Storage.Container"]);
+		}
 	}
 }
