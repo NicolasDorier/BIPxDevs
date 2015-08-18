@@ -50,9 +50,9 @@ namespace BIPApproval.Controllers
             editVm.MessageLink = vm.MessageLink;
             editVm.ASCLink = vm.ASCLink;
             if(vm.Message != null)
-                editVm.Message = new WebClient().DownloadString(repo.GetSigLink(editVm.Id));
+                editVm.Message = repo.GetSig(editVm.Id);
             editVm.SignatureSample = repo.GetSigLink("zsample");
-            editVm.ASCLink = repo.GetASCLink("zsample");
+            editVm.ResultSample = "/Opinion/zsample";
             return editVm;
         }
 
@@ -79,6 +79,10 @@ namespace BIPApproval.Controllers
                 if(repo.SaveHash(hash))
                 {
                     repo.UpdateDevViewModel(original);
+                    return RedirectToAction("Dev", "Main", new
+                    {
+                        devId = editVm.Id
+                    });
                 }
                 else
                 {

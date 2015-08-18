@@ -35,7 +35,7 @@ namespace BIPApproval
                 dev.FriendlyName = blob.Metadata.ContainsKey("Name") ? blob.Metadata["Name"].Replace("%20", " ") : dev.Id;
 
                 var vm = GetDevViewModel(dev.Id);
-                for(int i = 0; i < bips.Count;i++)
+                for(int i = 0; i < bips.Count; i++)
                 {
                     var opinion = vm.Opinions.Where(o => o.Name.Equals(bips[i].Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                     dev.Approvals.Add(opinion == null ? null : new bool?(opinion.Approve));
@@ -83,8 +83,10 @@ namespace BIPApproval
             string pubkey = null;
             try
             {
-                sig = new WebClient().DownloadString(vm.MessageLink);
-                pubkey = new WebClient().DownloadString(vm.ASCLink);
+                var client = new WebClient();
+                client.Encoding = Encoding.UTF8;
+                sig = client.DownloadString(vm.MessageLink);
+                pubkey = client.DownloadString(vm.ASCLink);
             }
             catch
             {
@@ -97,7 +99,14 @@ namespace BIPApproval
                 return vm;
             vm.Load(message);
             return vm;
-        }        
+        }
+
+        public string GetSig(string devId)
+        {
+            var client = new WebClient();
+            client.Encoding = Encoding.UTF8;
+            return client.DownloadString(GetSigLink(devId));
+        }
 
         public string GetASCLink(string dev)
         {
@@ -113,19 +122,23 @@ namespace BIPApproval
 
         public void UpdateDevViewModel(DevEditViewModel dev)
         {
-            GetSigBlob(dev.Id).UploadText(dev.Message);
+            var bytes = Encoding.UTF8.GetBytes(dev.Message);
+            var sigBlob = GetSigBlob(dev.Id);
+            //hashBlob.Properties.ContentEncoding = "text/html; charset=UTF-8";
+            sigBlob.UploadFromByteArray(bytes, 0, bytes.Length);
         }
 
         internal bool SaveHash(byte[] hash)
         {
             //Poorman stringify
-            var hashStr = System.Text.Encoding.ASCII.GetString(hash);
+            string hex = BitConverter.ToString(hash).Replace("-", string.Empty);
             var container = Storage.CreateBlobContainer();
-            var hashBlob = container.GetBlockBlobReference("BlockSize/Hashes/" + hashStr);
+            var hashBlob = container.GetBlockBlobReference("BlockSize/Hashes/" + hex);
             if(hashBlob.Exists())
                 return false;
             hashBlob.UploadText("");
             return true;
         }
+
     }
 }
