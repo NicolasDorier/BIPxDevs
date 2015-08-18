@@ -18,7 +18,7 @@ namespace BIPApproval
 				url: "{controller}/{action}/{id}",
 				defaults: new
 				{
-					controller = "Home",
+					controller = "Main",
 					action = "Index",
 					id = UrlParameter.Optional
 				}
