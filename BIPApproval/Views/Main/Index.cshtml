@@ -1,4 +1,5 @@
-﻿@model BIPApproval.Models.ApprovalMatrixModel
+﻿@using BIPApproval
+@model BIPApproval.Models.ApprovalMatrixModel
 @{
 	ViewBag.Title = "Index";
 }
@@ -26,6 +27,11 @@
         font-weight: normal;
         padding: 20px 30px;
         text-align: center;
+    }
+
+    a.white {
+        text-decoration:underline;
+        color: #d9f3fb;
     }
 
 		.dev {
@@ -56,7 +62,7 @@
 		@foreach(var bip in Model.BIPs){
 	  if(bip.Link != null)
 	  {
-			<th><a href="@bip.Link">@bip.Name</a></th>
+			<th><a class="white" href="@bip.Link">@bip.Name</a></th>
 	   }
 	   else
 	   {
@@ -67,10 +73,10 @@
 	@foreach(var dev in Model.Devs)
  {			
 		<tr>
-			<td class="dev">@dev.Name</td>
+			<td class="dev"><a class="white" href="/Opinion/@dev.Name">@dev.Name</a></td>
 			@for(int i = 0 ; i < Model.BIPs.Count ; i++)
    {
-				<td>@dev.Approvals[i]</td>
+				<td><a href="/Opinion/@dev.Name#@Model.BIPs[i].Name">@Html.Approval(dev.Approvals[i])</a></td>
    }
 		</tr>
  }

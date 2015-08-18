@@ -10,15 +10,15 @@ namespace BIPApproval.Models
 	{
 		public DevModel()
 		{
-			Approvals = new List<string>();
+			Approvals = new List<bool?>();
 		}
-		public List<string> Approvals
+		public List<bool?> Approvals
 		{
 			get;
 			set;
 		}
 
-		public object Name
+		public string Name
 		{
 			get;
 			set;
