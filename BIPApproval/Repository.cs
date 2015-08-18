@@ -40,7 +40,18 @@ namespace BIPApproval
 					}
                 };
             }
-        
+        }
+
+        public string GetASCLink(string dev)
+        {
+            var container = Storage.CreateBlobContainer();
+            return container.Uri.AbsoluteUri + "/Blocksize/AcceptedDevs/" + dev + ".asc";
+        }
+
+        public string GetSigLink(string devName)
+        {
+            var container = Storage.CreateBlobContainer();
+            return container.Uri.AbsoluteUri + "/Blocksize/DevsPost/" + devName + ".sig";
         }
     }
 }
