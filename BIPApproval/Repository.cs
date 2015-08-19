@@ -19,7 +19,7 @@ namespace BIPApproval
             yield return new BIPModel("8MB Only", null);
             yield return new BIPModel("BIP 102", "https://github.com/jgarzik/bips/blob/2015_2mb_blocksize/bip-0102.mediawiki");
             yield return new BIPModel("BIP SIPA", "https://gist.github.com/sipa/c65665fc360ca7a176a6");
-            yield return new BIPModel("Do Nothing", null);
+            yield return new BIPModel("No Change", null);
         }
 
         public IEnumerable<DevModel> GetDevs()
