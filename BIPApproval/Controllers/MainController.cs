@@ -17,6 +17,7 @@ namespace BIPApproval.Controllers
         //
         // GET: /Main/
 
+        [OutputCache(Duration = 10, VaryByParam = "none")]
         public ActionResult Index()
         {
             Repository repo = new Repository();
