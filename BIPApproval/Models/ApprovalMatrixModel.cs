@@ -6,29 +6,35 @@ using System.Threading.Tasks;
 
 namespace BIPApproval.Models
 {
-	public class DevModel
-	{
-		public DevModel()
-		{
-			Approvals = new List<bool?>();
-		}
-		public List<bool?> Approvals
-		{
-			get;
-			set;
-		}
+    public class DevModel
+    {
+        public DevModel()
+        {
+            Approvals = new List<bool?>();
+        }
+        public List<bool?> Approvals
+        {
+            get;
+            set;
+        }
 
-		public string FriendlyName
-		{
-			get;
-			set;
-		}
+        public string FriendlyName
+        {
+            get;
+            set;
+        }
         public string Id
         {
             get;
             set;
         }
-	}
+
+        public string Group
+        {
+            get;
+            set;
+        }
+    }
 
 	public class BIPModel
 	{
@@ -58,14 +64,14 @@ namespace BIPApproval.Models
 		public ApprovalMatrixModel()
 		{
 			BIPs = new List<BIPModel>();
-			Devs = new List<DevModel>();
+            DevGroups = new List<IGrouping<string, DevModel>>();
 		}
 		public List<BIPModel> BIPs
 		{
 			get;
 			set;
 		}
-		public List<DevModel> Devs
+		public List<IGrouping<string,DevModel>> DevGroups
 		{
 			get;
 			set;

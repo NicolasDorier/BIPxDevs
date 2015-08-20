@@ -23,7 +23,12 @@ namespace BIPApproval.Controllers
             Repository repo = new Repository();
             ApprovalMatrixModel approval = new ApprovalMatrixModel();
             approval.BIPs.AddRange(repo.GetBIPs());
-            approval.Devs.AddRange(repo.GetDevs());
+            approval.DevGroups.AddRange(repo
+                                        .GetDevs()
+                                        .OrderBy(d=>d.FriendlyName)
+                                        .OrderBy(d=>d.Group == "Core Developers" ? 0 : 
+                                                    d.Group == "Developers" ? 1 : 2)
+                                        .GroupBy(d=>d.Group));
             return View(approval);
         }
 

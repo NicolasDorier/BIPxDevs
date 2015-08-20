@@ -24,12 +24,13 @@ namespace BIPApproval
 
         public IEnumerable<DevModel> GetDevs()
         {
+            List<DevModel> devs = new List<DevModel>();
             var bips = GetBIPs().ToList();
             var container = Storage.CreateBlobContainer();
-            foreach(var blob in container
+            Parallel.ForEach(container
                 .ListBlobs("BlockSize/AcceptedDevs", true, BlobListingDetails.All)
                 .OfType<CloudBlockBlob>()
-                .Where(o => o.Name.EndsWith(".asc") || o.Name.EndsWith(".pgp")))
+                .Where(o => o.Name.EndsWith(".asc") || o.Name.EndsWith(".pgp")), blob =>
             {
                 var localBlob = blob;
                 if(localBlob.Name.EndsWith(".pgp"))
@@ -49,6 +50,9 @@ namespace BIPApproval
                 var dev = new DevModel();
                 dev.Id = localBlob.Name.Split('/').Last().Split('.').First();
                 dev.FriendlyName = localBlob.Metadata.ContainsKey("Name") ? localBlob.Metadata["Name"].Replace("%20", " ") : dev.Id;
+                dev.Group = localBlob.Metadata.ContainsKey("Group") ? localBlob.Metadata["Group"].Replace("%20", " ") : "";
+                dev.Group = dev.Group == "CoreDevs" ? "Core Developers" : dev.Group;
+                dev.Group = dev.Group == "Devs" ? "Developers" : dev.Group;
 
                 var vm = GetDevViewModel(dev.Id);
                 for(int i = 0; i < bips.Count; i++)
@@ -56,8 +60,12 @@ namespace BIPApproval
                     var opinion = vm.Opinions.Where(o => o.Name.Equals(bips[i].Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                     dev.Approvals.Add(opinion == null ? null : new bool?(opinion.Approve));
                 }
-                yield return dev;
-            }
+                lock(devs)
+                {
+                    devs.Add(dev);
+                }
+            });
+            return devs;
         }
 
         private string GetFriendlyName(string devId)

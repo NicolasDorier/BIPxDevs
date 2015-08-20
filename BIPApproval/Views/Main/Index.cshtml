@@ -1,7 +1,7 @@
 ﻿@using BIPApproval
 @model BIPApproval.Models.ApprovalMatrixModel
 @{
-	ViewBag.Title = "Index";
+    ViewBag.Title = "Index";
 }
 <style>
     table {
@@ -30,18 +30,22 @@
     }
 
     a.white {
-        text-decoration:underline;
+        text-decoration: underline;
         color: #d9f3fb;
     }
 
-		.dev {
-			background-color: rgb(112, 196, 105);
-			color: white;
-			font-weight: normal;
-			padding: 20px 10px;
-			text-align: center;
-		}
-
+    .dev {
+        background-color: rgb(112, 196, 105);
+        color: white;
+        font-weight: normal;
+        padding: 20px 10px;
+        text-align: center;
+    }
+    .matrixgroup
+    {
+        background-color: green;
+        color: white;
+    }
     img {
         display: block;
         margin-left: auto;
@@ -52,35 +56,46 @@
     }
 </style>
 <h2>BIPs x Devs Approval Matrix<sup><a href="https://blockchainprogramming.azurewebsites.net/" style="font-size:small;">With a shameless plug</a></sup></h2>
-<p>About clearing the noise of blocksize debate, devs need to sign with their PGP key. <br />
- My sushi saving box : <b><a href="https://blockchain.info/address/15sYbVpRh6dyWycZMwPdxJWD4xbfxReeHe">15sybvprh6dywyczmwpdxjwd4xbfxreehe</a></b>. <br />
- The project is on <a href="https://github.com/NicolasDorier/BIPxDevs">github</a>. <br />
- If you want to discuss about it, there is a <a href="https://bitcointalk.org/index.php?topic=1156164">thread on bitcointalk</a>. <br />
-  Happy coding !
+<p>
+    About clearing the noise of blocksize debate, devs need to sign with their PGP key. <br />
+    My sushi saving box : <b><a href="https://blockchain.info/address/15sYbVpRh6dyWycZMwPdxJWD4xbfxReeHe">15sybvprh6dywyczmwpdxjwd4xbfxreehe</a></b>. <br />
+    The project is on <a href="https://github.com/NicolasDorier/BIPxDevs">github</a>. <br />
+    If you want to discuss about it, there is a <a href="https://bitcointalk.org/index.php?topic=1156164">thread on bitcointalk</a>. <br />
+    Happy coding !
 </p>
 <table>
-	<tr>
-		<th>Dev</th>
-		@foreach(var bip in Model.BIPs){
-	  if(bip.Link != null)
-	  {
-			<th><a class="white" href="@bip.Link">@bip.Name</a></th>
-	   }
-	   else
-	   {
-			<th>@bip.Name</th>
-	   }
-   }    
-	</tr>
-	@foreach(var dev in Model.Devs)
- {			
-		<tr>
-			<td class="dev"><a class="white" href="/Opinion/@dev.Id">@dev.FriendlyName</a></td>
-			@for(int i = 0 ; i < Model.BIPs.Count ; i++)
-   {
-				<td><a href="/Opinion/@dev.Id#@Model.BIPs[i].Name">@Html.Approval(dev.Approvals[i])</a></td>
-   }
-		</tr>
- }
-</table>
+    <tr>
+        <th>Dev</th>
+        @foreach(var bip in Model.BIPs)
+        {
+            if(bip.Link != null)
+            {
+                <th><a class="white" href="@bip.Link">@bip.Name</a></th>
+            }
+            else
+            {
+                <th>@bip.Name</th>
+            }
+        }
+    </tr>
+    @foreach(var group in Model.DevGroups)
+    {
+        <td class="matrixgroup">@group.Key</td>
+        for(int i = 0; i < Model.BIPs.Count; i++)
+        {
+            <td class="matrixgroup"></td>
+        }
 
+        foreach(var dev in group)
+        {
+
+            <tr>
+                <td class="dev"><a class="white" href="/Opinion/@dev.Id">@dev.FriendlyName</a></td>
+                @for(int i = 0; i < Model.BIPs.Count; i++)
+                {
+                    <td><a href="/Opinion/@dev.Id#@Model.BIPs[i].Name">@Html.Approval(dev.Approvals[i])</a></td>
+                }
+            </tr>
+        }
+    }
+</table>
