@@ -29,11 +29,26 @@ namespace BIPApproval
             foreach(var blob in container
                 .ListBlobs("BlockSize/AcceptedDevs", true, BlobListingDetails.All)
                 .OfType<CloudBlockBlob>()
-                .Where(o => o.Name.EndsWith(".asc")))
+                .Where(o => o.Name.EndsWith(".asc") || o.Name.EndsWith(".pgp")))
             {
+                var localBlob = blob;
+                if(localBlob.Name.EndsWith(".pgp"))
+                {
+                    var ascBlob = container.GetBlockBlobReference(localBlob.Name.Replace(".pgp", ".asc"));
+                    foreach(var meta in localBlob.Metadata)
+                    {
+                        ascBlob.Metadata.Add(meta);
+                    }
+                    var content = CryptoHelper.ToAsc(new WebClient().DownloadData(localBlob.Uri));
+                    ascBlob.UploadFromByteArray(content, 0, content.Length);
+                    ascBlob.SetMetadata();
+                    localBlob.DeleteIfExists();
+                    localBlob = ascBlob;
+                }
+
                 var dev = new DevModel();
-                dev.Id = blob.Name.Split('/').Last().Split('.').First();
-                dev.FriendlyName = blob.Metadata.ContainsKey("Name") ? blob.Metadata["Name"].Replace("%20", " ") : dev.Id;
+                dev.Id = localBlob.Name.Split('/').Last().Split('.').First();
+                dev.FriendlyName = localBlob.Metadata.ContainsKey("Name") ? localBlob.Metadata["Name"].Replace("%20", " ") : dev.Id;
 
                 var vm = GetDevViewModel(dev.Id);
                 for(int i = 0; i < bips.Count; i++)
@@ -81,13 +96,13 @@ namespace BIPApproval
             vm.MessageLink = GetSigLink(devId);
             vm.FriendlyName = GetFriendlyName(devId);
             string sig = null;
-            string pubkey = null;
+            byte[] pubkey = null;
             try
             {
                 var client = new WebClient();
                 client.Encoding = Encoding.UTF8;
                 sig = client.DownloadString(vm.MessageLink);
-                pubkey = client.DownloadString(vm.ASCLink);
+                pubkey = client.DownloadData(vm.ASCLink);
             }
             catch
             {

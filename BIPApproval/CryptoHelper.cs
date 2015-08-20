@@ -11,13 +11,12 @@ namespace BIPApproval
 {
     public class CryptoHelper
     {
-        public static bool VerifySig(string asc, string sig, out string message)
+        public static bool VerifySig(byte[] asc, string sig, out string message)
         {
             try
             {
-
-                PgpPublicKey pubkey = new PgpPublicKeyRing(PgpUtilities.GetDecoderStream(new MemoryStream(Encoding.UTF8.GetBytes(asc)))).GetPublicKey(); //java madness
-
+                PgpPublicKey pubkey = new PgpPublicKeyRing(GetStream(asc)).GetPublicKey(); //java madness
+               
                 //AGAIN MADNESS THIS MAKE PERFECT SENSE !
                 ArmoredInputStream sigInput = new ArmoredInputStream(new MemoryStream(Encoding.UTF8.GetBytes(sig)));
 
@@ -68,6 +67,21 @@ namespace BIPApproval
                 message = null;
                 return false;
             }
+        }
+
+        private static Stream GetStream(byte[] asc)
+        {
+            return PgpUtilities.GetDecoderStream(new MemoryStream(asc));
+        }
+
+        public static byte[] ToAsc(byte[] pgp)
+        {
+            MemoryStream ms = new MemoryStream();
+            var ring = new PgpPublicKeyRing(GetStream(pgp));
+            var armored = new ArmoredOutputStream(ms);
+            ring.Encode(armored);
+            armored.Dispose();
+            return ms.ToArray();
         }
     }
 }

@@ -64,7 +64,7 @@ namespace BIPApproval.Controllers
             var repo = new Repository();
             var original = GetDevEditViewModel(editVm.Id);
             original.Message = editVm.Message;
-            var asc = new WebClient().DownloadString(repo.GetASCLink(editVm.Id));
+            var asc = new WebClient().DownloadData(repo.GetASCLink(editVm.Id));
             string extracted;
             if(!CryptoHelper.VerifySig(asc, editVm.Message, out extracted))
             {
