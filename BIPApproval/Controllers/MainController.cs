@@ -25,7 +25,7 @@ namespace BIPApproval.Controllers
             approval.BIPs.AddRange(repo.GetBIPs());
             approval.DevGroups.AddRange(repo
                                         .GetDevs()
-                                        .OrderBy(d=>d.FriendlyName)
+                                        .OrderBy(d=>d.Id == "zsample" ? "zzz" : d.FriendlyName)
                                         .OrderBy(d=>d.Group == "Core Developers" ? 0 : 
                                                     d.Group == "Developers" ? 1 : 2)
                                         .GroupBy(d=>d.Group));
