@@ -80,6 +80,7 @@
 <table>
     <tr>
         <th></th>
+		<th></th>
         @foreach(var bip in Model.BIPs)
         {
             if(bip.Link != null)
@@ -91,7 +92,6 @@
                 <th>@bip.Name</th>
             }
         }
-        <th>Technical Opinion</th>
     </tr>
     @foreach(var group in Model.DevGroups)
     {
@@ -107,11 +107,11 @@
         {
             <tr>
                 <td class="dev"><a class="white" href="/Opinion/@dev.Id">@dev.FriendlyName</a></td>
+				<td class="dev"><a href="/Opinion/@dev.Id" style="color:white;text-decoration:underline;">View/Edit</a></td>
                 @for(int i = 0; i < Model.BIPs.Count; i++)
                 {
                     <td><a href="/Opinion/@dev.Id#@Model.BIPs[i].Name">@Html.Approval(dev.Approvals[i])</a></td>
-                }
-                <td><a href="/Opinion/@dev.Id">Link</a></td>
+                }                
             </tr>
         }
 
