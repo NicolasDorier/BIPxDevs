@@ -41,11 +41,12 @@
         padding: 20px 10px;
         text-align: center;
     }
-    .matrixgroup
-    {
+
+    .matrixgroup {
         background-color: green;
         color: white;
     }
+
     img {
         display: block;
         margin-left: auto;
@@ -60,17 +61,25 @@
     About clearing the noise of blocksize debate, devs need to sign with their PGP key. <br />
     My sushi saving box : <b><a href="https://blockchain.info/address/15sYbVpRh6dyWycZMwPdxJWD4xbfxReeHe">15sybvprh6dywyczmwpdxjwd4xbfxreehe</a></b>. <br />
     The project is on <a href="https://github.com/NicolasDorier/BIPxDevs">github</a>. <br />
-    If you want to discuss about it, there is a <a href="https://bitcointalk.org/index.php?topic=1156164">thread on bitcointalk</a>. <br />    
+    If you want to discuss about it, there is a <a href="https://bitcointalk.org/index.php?topic=1156164">thread on bitcointalk</a>. <br />
+</p>
+<p>
+    <b>If you are in the list, and wants to fill out your opinion :</b>
+    <ul>
+        <li>Click on your name in the main page</li>
+        <li>Click on Edit</li>
+        <li>Submit a PGP signed, formatted message (HTML accepted) with your approval/disapproval and opinion on each BIP as in the example</li>
+    </ul>
 </p>
 @*<p>
-    To keep the table readable, I list other BIPs informatively here, if any voter wants I include it in the table, please let me know on btctalk :
-    <ul>
-        <li><a href="https://bitcointalk.org/index.php?topic=1154536.0">BIP upal</a> (Dynamically Controlled Bitcoin Block Size Max Cap)</li>
-    </ul>
-</p>*@
+        To keep the table readable, I list other BIPs informatively here, if any voter wants I include it in the table, please let me know on btctalk :
+        <ul>
+            <li><a href="https://bitcointalk.org/index.php?topic=1154536.0">BIP upal</a> (Dynamically Controlled Bitcoin Block Size Max Cap)</li>
+        </ul>
+    </p>*@
 <table>
     <tr>
-        <th>Dev</th>
+        <th></th>
         @foreach(var bip in Model.BIPs)
         {
             if(bip.Link != null)
@@ -82,25 +91,29 @@
                 <th>@bip.Name</th>
             }
         }
+        <th>Technical Opinion</th>
     </tr>
     @foreach(var group in Model.DevGroups)
     {
-        <td class="matrixgroup">@group.Key</td>
-        for(int i = 0; i < Model.BIPs.Count; i++)
-        {
+        <tr>
+            <td class="matrixgroup">@group.Key</td>
+            @for(int i = 0; i < Model.BIPs.Count; i++)
+            {
             <td class="matrixgroup"></td>
-        }
-
+            }
+            <td class="matrixgroup"></td>
+        </tr>
         foreach(var dev in group)
         {
-
             <tr>
                 <td class="dev"><a class="white" href="/Opinion/@dev.Id">@dev.FriendlyName</a></td>
                 @for(int i = 0; i < Model.BIPs.Count; i++)
                 {
                     <td><a href="/Opinion/@dev.Id#@Model.BIPs[i].Name">@Html.Approval(dev.Approvals[i])</a></td>
                 }
+                <td><a href="/Opinion/@dev.Id">Link</a></td>
             </tr>
         }
+
     }
 </table>
