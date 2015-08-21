@@ -63,7 +63,7 @@ namespace BIPApproval.Controllers
         }
 
         [Route("EditOpinion")]
-        [HttpPost]
+        [HttpPost, ValidateInput(false)]
         public ActionResult DevEditPost(DevEditViewModel editVm)
         {
             var repo = new Repository();

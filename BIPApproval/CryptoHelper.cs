@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BIPApproval
@@ -55,9 +56,18 @@ namespace BIPApproval
 
                 var toSign = bOut.ToArray();
                 message = Encoding.UTF8.GetString(toSign);
+
                 PgpObjectFactory pgpObjFactory = new PgpObjectFactory(sigInput);
                 var list = (PgpSignatureList)pgpObjFactory.NextPgpObject();
                 PgpSignature pgpSig = list[0];
+                pgpSig.InitVerify(pubkey);
+                pgpSig.Update(toSign);
+                var result = pgpSig.Verify();
+                if(result)
+                    return result;
+                Regex endofline = new Regex("[ ]*?\r\n");
+                message = endofline.Replace(message, "\r\n");
+                toSign = Encoding.UTF8.GetBytes(message);
                 pgpSig.InitVerify(pubkey);
                 pgpSig.Update(toSign);
                 return pgpSig.Verify();
@@ -68,6 +78,7 @@ namespace BIPApproval
                 return false;
             }
         }
+
 
         private static Stream GetStream(byte[] asc)
         {
