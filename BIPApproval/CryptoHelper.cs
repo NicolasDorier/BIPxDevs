@@ -65,8 +65,8 @@ namespace BIPApproval
                 var result = pgpSig.Verify();
                 if(result)
                     return result;
-                Regex endofline = new Regex("[ ]*?\r\n");
-                message = endofline.Replace(message, "\r\n");
+                Regex endofline = new Regex("[ ]+?(\r?)\n");
+                message = endofline.Replace(message, "$1\n");
                 toSign = Encoding.UTF8.GetBytes(message);
                 pgpSig.InitVerify(pubkey);
                 pgpSig.Update(toSign);
