@@ -16,67 +16,73 @@ namespace BIPApproval
         {
             try
             {
-                PgpPublicKey pubkey = new PgpPublicKeyRing(GetStream(asc)).GetPublicKey(); //java madness
-               
-                //AGAIN MADNESS THIS MAKE PERFECT SENSE !
-                ArmoredInputStream sigInput = new ArmoredInputStream(new MemoryStream(Encoding.UTF8.GetBytes(sig)));
-
-                //
-                // read the input, making sure we ingore the last newline.
-                //
-                int ch;
-                string newLine = null;
-                MemoryStream bOut = new MemoryStream();
-
-                while((ch = sigInput.ReadByte()) >= 0 && sigInput.IsClearText())
+                foreach(PgpPublicKey pubkey in new PgpPublicKeyRing(GetStream(asc)).GetPublicKeys().OfType<PgpPublicKey>()) //java madness
                 {
-                    if(newLine != null)
+
+
+                    //AGAIN MADNESS THIS MAKE PERFECT SENSE !
+                    ArmoredInputStream sigInput = new ArmoredInputStream(new MemoryStream(Encoding.UTF8.GetBytes(sig)));
+
+                    //
+                    // read the input, making sure we ingore the last newline.
+                    //
+                    int ch;
+                    string newLine = null;
+                    MemoryStream bOut = new MemoryStream();
+
+                    while((ch = sigInput.ReadByte()) >= 0 && sigInput.IsClearText())
                     {
-                        foreach(var c in newLine)
-                            bOut.WriteByte((byte)c);
-                        newLine = null;
-                    }
-                    if(ch == '\r')
-                    {
-                        ch = sigInput.ReadByte();
+                        if(newLine != null)
+                        {
+                            foreach(var c in newLine)
+                                bOut.WriteByte((byte)c);
+                            newLine = null;
+                        }
+                        if(ch == '\r')
+                        {
+                            ch = sigInput.ReadByte();
+                            if(ch == '\n')
+                            {
+                                newLine = "\r\n";
+                                continue;
+                            }
+                        }
                         if(ch == '\n')
                         {
-                            newLine = "\r\n";
+                            newLine = "\n";
                             continue;
                         }
-                    }
-                    if(ch == '\n')
-                    {
-                        newLine = "\n";
-                        continue;
+
+                        bOut.WriteByte((byte)ch);
                     }
 
-                    bOut.WriteByte((byte)ch);
+                    var toSign = bOut.ToArray();
+                    message = Encoding.UTF8.GetString(toSign);
+
+                    PgpObjectFactory pgpObjFactory = new PgpObjectFactory(sigInput);
+                    var list = (PgpSignatureList)pgpObjFactory.NextPgpObject();
+                    PgpSignature pgpSig = list[0];
+                    pgpSig.InitVerify(pubkey);
+                    pgpSig.Update(toSign);
+                    var result = pgpSig.Verify();
+                    if(result)
+                        return result;
+                    Regex endofline = new Regex("[ ]+?(\r?)\n");
+                    message = endofline.Replace(message, "$1\n");
+                    toSign = Encoding.UTF8.GetBytes(message);
+                    pgpSig.InitVerify(pubkey);
+                    pgpSig.Update(toSign);
+                    result = pgpSig.Verify();
+                    if(result)
+                        return result;
                 }
-
-                var toSign = bOut.ToArray();
-                message = Encoding.UTF8.GetString(toSign);
-
-                PgpObjectFactory pgpObjFactory = new PgpObjectFactory(sigInput);
-                var list = (PgpSignatureList)pgpObjFactory.NextPgpObject();
-                PgpSignature pgpSig = list[0];
-                pgpSig.InitVerify(pubkey);
-                pgpSig.Update(toSign);
-                var result = pgpSig.Verify();
-                if(result)
-                    return result;
-                Regex endofline = new Regex("[ ]+?(\r?)\n");
-                message = endofline.Replace(message, "$1\n");
-                toSign = Encoding.UTF8.GetBytes(message);
-                pgpSig.InitVerify(pubkey);
-                pgpSig.Update(toSign);
-                return pgpSig.Verify();
             }
             catch //Don't do it at home kids
             {
-                message = null;
-                return false;
+             
             }
+            message = null;
+            return false;
         }
 
 

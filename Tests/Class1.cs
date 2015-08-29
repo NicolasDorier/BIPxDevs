@@ -29,5 +29,14 @@ namespace Tests
 
             Assert.True(CryptoHelper.VerifySig(CryptoHelper.ToAsc(pubkey), sig, out txt));
         }
+        [Fact]
+        public void CanCheckSigWithSubkeys()
+        {
+            var pubkey = File.ReadAllBytes("../../Data/btcdrak.asc");
+            var sig = File.ReadAllText("../../Data/btcdrak.sig");
+            string txt = null;
+            var result = CryptoHelper.VerifySig(pubkey, sig, out txt);
+            Assert.True(result);
+        }
     }
 }
