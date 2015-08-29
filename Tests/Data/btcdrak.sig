@@ -26,9 +26,6 @@ with the standard rollout of softforking[4].
 <li><a href="https://gist.github.com/sipa/bf69659f43e763540550">Version Bits proposal</a></li>
 <li><a href="http://lists.linuxfoundation.org/pipermail/bitcoin-dev/2015-August/010396.html">Deployment considerations</a></li>
 </ol>
-gpg: NOTE: signature key D629FA40 has been revoked
-gpg: using subkey 3A31E956 instead of primary key E73A1AF2
-gpg: RSA/SHA256 signature from: "3A31E956 BtcDrak <btcdrak@gmail.com>"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
