@@ -21,7 +21,7 @@ namespace BIPApproval
 			yield return new BIPModel("8MB Only", null);
 			yield return new BIPModel("BIP Rosenfeld", "https://bitcointalk.org/index.php?topic=1078521");
             yield return new BIPModel("BIP upal", "https://github.com/UpalChakraborty/bips/blob/master/BIP-DynamicMaxBlockSize.mediawiki");
-            yield return new BIPModel("BIP CBBSRA", "https://gist.github.com/btcdrak/1c3a323100a912b605b5");
+            yield return new BIPModel("BIP 105", "https://github.com/btcdrak/bips/blob/bip-cbbsra/bip-0105.mediawiki");
 			yield return new BIPModel("No Change", null);
 		}
 
