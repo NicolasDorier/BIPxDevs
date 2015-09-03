@@ -61,7 +61,7 @@ namespace BIPApproval
 				for(int i = 0 ; i < bips.Count ; i++)
 				{
 					var opinion = vm.Opinions.Where(o => o.Name.Equals(bips[i].Name, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
-					dev.Approvals.Add(opinion == null ? null : new bool?(opinion.Approve));
+                    dev.Approvals.Add(opinion == null ? null : new Approval?(opinion.Approve));
 				}
 				lock(devs)
 				{

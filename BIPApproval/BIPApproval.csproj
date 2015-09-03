@@ -170,6 +170,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Approval.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -189,6 +190,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\info.png" />
     <Content Include="Content\StatusAnnotations_Blocked_32xMD_color.png" />
     <Content Include="Content\StatusAnnotations_Complete_and_ok_32xMD_color.png" />
     <Content Include="Content\themes\base\accordion.css" />

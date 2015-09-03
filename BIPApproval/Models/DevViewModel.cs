@@ -18,7 +18,7 @@ namespace BIPApproval.Models
 			get;
 			set;
 		}
-		public bool Approve
+		public Approval Approve
 		{
 			get;
 			set;
@@ -142,7 +142,8 @@ namespace BIPApproval.Models
 				else if(line.StartsWith("Approval", StringComparison.InvariantCultureIgnoreCase) && currentOpinion != null)
 				{
 					var approval = line.Split(':').Last().Trim();
-					currentOpinion.Approve = approval.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+					currentOpinion.Approve = approval.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) ? Approval.Yes :
+                                             approval.Equals("No", StringComparison.InvariantCultureIgnoreCase) ? Approval.No: Approval.NA;
 				}
 				else
 				{

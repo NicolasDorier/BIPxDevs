@@ -10,9 +10,9 @@ namespace BIPApproval.Models
     {
         public DevModel()
         {
-            Approvals = new List<bool?>();
+            Approvals = new List<Approval?>();
         }
-        public List<bool?> Approvals
+        public List<Approval?> Approvals
         {
             get;
             set;
